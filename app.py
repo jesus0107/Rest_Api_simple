@@ -10,6 +10,7 @@ app = Flask(__name__)
 def get_products():
     return jsonify({"products": products, "message": "Products list"})
 
+
 @app.route("/products/<string:product_name>")
 def get_product(product_name):
     print(product_name)
@@ -17,6 +18,7 @@ def get_product(product_name):
     if len(product_found) > 0:
         return jsonify({"product": product_found[0]})
     return jsonify({"message": "Product not found"})
+
 
 @app.route("/products/create", methods=['POST'])
 def add_product():
@@ -27,6 +29,7 @@ def add_product():
     }
     products.append(new_product)
     return jsonify({"message": "Product added succesfully", "products":products})
+
 
 @app.route("/products/<string:product_name>", methods=['PUT'])
 def edit_product(product_name):
@@ -41,6 +44,20 @@ def edit_product(product_name):
             "product": product_found
         })
     return jsonify({"message": "Product not found"})
+
+
+@app.route("/products/<string:product_name>", methods=['DELETE'])
+def delete_product(product_name):
+    product_found = [product for product in products if product['name'] == product_name]
+    product_found = product_found[0]
+    if len(product_found) > 0:
+        products.remove(product_found)
+        return jsonify({
+            "message": "Removed product",
+            "products": products
+        })
+    return jsonify({"message": "Product not found"})
     
+
 if __name__ == "__main__":
     app.run()
